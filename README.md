@@ -8,6 +8,12 @@ This bot is a discord bot that allows your members to control which games are cu
 - Rename example_env.txt to .env
 - Change the values in the .env file
 - Change the values in the config.json file
+- Install dependencies (requires python3)
+    
+        pip install -r requirements.txt
+- Run the bot
+
+        python3 main.py
 
 ## .env File
 BOT_TOKEN: is the token given to you by discords developer portal.
