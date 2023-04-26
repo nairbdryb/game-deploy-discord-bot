@@ -44,7 +44,7 @@ class DiscordClient(discord.Client):
                 for instance in self.config:
                     os.system(instance["stop_command"])
                 os.system(instance["start_command"])
-                return
+                continue
             elif payload.emoji.name == "♻":
                 await self.message.delete()
                 self.config = json.load(open("config.json" , "r"))
