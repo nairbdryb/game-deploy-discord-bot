@@ -14,9 +14,15 @@ class DiscordClient(discord.Client):
         await self.send_message()
 
     async def on_message(self, message):
+        '''
+        Test function, reads all messages and prints them.
+        '''
         print(f'Message form {message.author}: {message.content}')
 
     def check_time(self):
+        '''
+        Ensures that the server is not overloaded with requests.
+        '''
         if time.time() < self.last_time + int(self.frequency):
             return False
         else:
@@ -24,6 +30,9 @@ class DiscordClient(discord.Client):
             return True
 
     async def on_raw_reaction_add(self, payload):
+        '''
+        This function handles reactions to the message sent by the bot.
+        '''
         if payload.member.bot:
             return
         if payload.channel_id != int(self.channelID):
@@ -32,6 +41,9 @@ class DiscordClient(discord.Client):
             if instance["emoji"] == payload.emoji.name and self.check_time():
                 print(f"starting instance {instance['instance_name']}")
                 # TODO run stop and start commands
+                for instance in self.config:
+                    os.system(instance["stop_command"])
+                os.system(instance["start_command"])
                 return
             elif payload.emoji.name == "♻":
                 await self.message.delete()
@@ -47,6 +59,9 @@ class DiscordClient(discord.Client):
         return "[Map Status Placeholder]\n\n"
 
     async def send_message(self):
+        '''
+        This function sends the message to the channel specified in the .env file.
+        '''
         if self.channel is not None:
             print(f"found channel: {self.channel}")
             # TODO add status information into message
