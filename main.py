@@ -26,7 +26,6 @@ class DiscordClient(discord.Client):
         if time.time() < self.last_time + int(self.frequency):
             return False
         else:
-            self.last_time = time.time()
             return True
 
     async def on_raw_reaction_add(self, payload):
@@ -38,12 +37,14 @@ class DiscordClient(discord.Client):
         if payload.channel_id != int(self.channelID):
             return
         for instance in self.config:
-            if instance["emoji"] == payload.emoji.name and self.check_time():
+            if (instance["emoji"] == payload.emoji.name) and self.check_time():
                 print(f"starting instance {instance['instance_name']}")
                 # TODO run stop and start commands
-                for instance in self.config:
-                    os.system(instance["stop_command"])
+                for inst in self.config:
+                    if inst["instance_name"] != instance["instance_name"]:
+                        os.system(inst["stop_command"])
                 os.system(instance["start_command"])
+                self.last_time = time.time()
                 continue
             elif payload.emoji.name == "♻":
                 await self.message.delete()
@@ -79,8 +80,9 @@ class DiscordClient(discord.Client):
 
 def exit_handler():
     print("\nexiting")
-    for instance in client.config:
-        print(f"stopping instance {instance['instance_name']}")
+    # for instance in client.config:
+    #     print(f"stopping instance {instance['instance_name']}")
+
 
 if __name__ == "__main__":
     intents = discord.Intents.default()
