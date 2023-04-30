@@ -57,7 +57,32 @@ class DiscordClient(discord.Client):
             await message.remove_reaction(payload.emoji, payload.member)
 
     def get_status(self): # TODO: add status information such as players and map
-        return "[Map Status Placeholder]\n\n"
+        # os.system("arkmanager status @all | sed -e 's/\x1b\[[0-9;]*m//g' > status.txt") TODO add back
+        serverData = [{}]
+        i = 0
+        try:
+            with open("status.txt", "r", encoding='UTF-8') as file:
+                lines = file.readlines()
+            for line in lines:
+                if "Running command" in line:
+                    serverData[i]["instance_name"] = line.split(" ")[-1].strip().replace("'", "")
+                elif "Server running" in line:
+                    serverData[i]["running"] = line.split(" ")[-2].strip()
+                elif "Steam Players" in line and not "Active" in line:
+                    serverData[i]["players"] = line.split(" ")[-3].strip()
+                elif "connect link" in line:
+                    serverData[i]["connect_link"] = line.split(" ")[-2].strip()
+                elif "version" in line:
+                    serverData[i]["version"] = line.split(" ")[-2].strip()
+                    i+=1 
+                    serverData.append({})
+            message = ""
+            for data in serverData:
+                if "instance_name" in data:
+                    message += f"_{data['instance_name']}_\nRunning: {data['running']}\nPlayers: {data['players']}\nLink: {data['connect_link']}\nVersion: {data['version']}\n\n"
+            return message
+        except Exception as err:
+            return "Unable to get server status\n\n"
 
     async def send_message(self):
         '''
