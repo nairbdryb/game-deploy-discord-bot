@@ -56,8 +56,8 @@ class DiscordClient(discord.Client):
             message = await channel.fetch_message(payload.message_id)
             await message.remove_reaction(payload.emoji, payload.member)
 
-    def get_status(self): # TODO: add status information such as players and map
-        # os.system("arkmanager status @all | sed -e 's/\x1b\[[0-9;]*m//g' > status.txt") TODO add back
+    def get_status(self):
+        os.system("arkmanager status @all | sed -e 's/\x1b\[[0-9;]*m//g' > status.txt") 
         serverData = [{}]
         i = 0
         try:
@@ -78,11 +78,14 @@ class DiscordClient(discord.Client):
                     serverData.append({})
             message = ""
             for data in serverData:
-                if "instance_name" in data:
-                    message += f"_{data['instance_name']}_\nRunning: {data['running']}\nPlayers: {data['players']}\nLink: {data['connect_link']}\nVersion: {data['version']}\n\n"
+                if "instance_name" in data and data["running"] == "Yes":
+                    message += f"Current map: **{data['instance_name']}**\nPlayers: {data['players']}\nLink: {data['connect_link']}\nVersion: {data['version']}\n\n"
+            if message == "":
+                return "No servers are currently running\n\n"
             return message
         except Exception as err:
             return "Unable to get server status\n\n"
+
 
     async def send_message(self):
         '''
@@ -90,7 +93,6 @@ class DiscordClient(discord.Client):
         '''
         if self.channel is not None:
             print(f"found channel: {self.channel}")
-            # TODO add status information into message
             message_content = self.get_status()
             message_content += "These are the maps that are available to be switched to:\n"
             for instance in self.config:
@@ -124,5 +126,3 @@ if __name__ == "__main__":
     client.config = json.load(file)
     print(client.channelID)
     client.run(TOKEN)
-
-# TODO: modify message to show running server, and add player list ability, add in commands
