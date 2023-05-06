@@ -37,6 +37,7 @@ class DiscordClient(discord.Client):
         if payload.channel_id != int(self.channelID):
             return
         for instance in self.config:
+            # Map Emojis
             if (instance["emoji"] == payload.emoji.name) and self.check_time():
                 print(f"starting instance {instance['instance_name']}")
                 # TODO run stop and start commands
@@ -46,11 +47,14 @@ class DiscordClient(discord.Client):
                 os.system(instance["start_command"])
                 self.last_time = time.time()
                 continue
+            # Refresh Emoji
             elif payload.emoji.name == "♻":
                 await self.message.delete()
                 self.config = json.load(open("config.json" , "r"))
                 await self.send_message()
                 break
+            elif payload.emoji.name == "⬆":
+                os.system("arkmanager update @all --update-mods")
             # remove reaction no matter the result
             channel = self.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
@@ -104,6 +108,7 @@ class DiscordClient(discord.Client):
             for instance in self.config:
                 await self.message.add_reaction(instance["emoji"])
             await self.message.add_reaction("♻")
+            await self.message.add_reaction("⬆")
 
 def exit_handler():
     print("\nexiting")
