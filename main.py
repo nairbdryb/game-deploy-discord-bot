@@ -111,7 +111,7 @@ class DiscordClient(discord.Client):
             await self.message.add_reaction("⬆")
 
 def exit_handler():
-    print("\nexiting")
+    print("\nexiting...")
     # for instance in client.config:
     #     print(f"stopping instance {instance['instance_name']}")
 
