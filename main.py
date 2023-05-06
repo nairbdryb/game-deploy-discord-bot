@@ -102,6 +102,7 @@ class DiscordClient(discord.Client):
             for instance in self.config:
                 message_content += f"{instance['instance_name']}: {instance['emoji']}\n"
             message_content += "Please react to this message with the emoji of the instance you want to run.\n React with ♻ to refresh the list."
+            message_content += "\nReact with ⬆ to update the game and mods."
             # Custom Embed, this is used to add color to the sidebar and a message title
             embed = discord.Embed(title=f"{self.instance_name} Status", description=message_content, color=discord.Colour.random())
             self.message = await self.channel.send(embed=embed)
