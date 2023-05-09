@@ -76,6 +76,8 @@ class DiscordClient(discord.Client):
                     serverData[i]["players"] = line.split(" ")[-3].strip()
                 elif "connect link" in line:
                     serverData[i]["connect_link"] = line.split(" ")[-2].strip()
+                elif "ARKServers link" in line:
+                    serverData[i]["status_link"] = line.split(" ")[-2].strip()
                 elif "version" in line:
                     serverData[i]["version"] = line.split(" ")[-2].strip()
                     i+=1 
@@ -83,7 +85,7 @@ class DiscordClient(discord.Client):
             message = ""
             for data in serverData:
                 if "instance_name" in data and data["running"] == "Yes":
-                    message += f"Current map: **{data['instance_name']}**\nPlayers: {data['players']}\nLink: {data['connect_link']}\nVersion: {data['version']}\n\n"
+                    message += f"Current map: **{data['instance_name']}**\nPlayers: {data['players']}\nLink: {data['connect_link']}\nInfo: {data['status_link']}\nVersion: {data['version']}\n\n"
             if message == "":
                 return "No servers are currently running\n\n"
             return message
